@@ -13,8 +13,8 @@ app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
 
-const token = process.env.TELEGRAM_BOT_TOKEN
-const bot = new TelegramBot(token, { polling: true });
+const token = process.env.TELEGRAM_BOT_TOKEN;
+const bot = new TelegramBot(token);
 
 function lookupWhois(domain, tlds) {
     const results = [];
@@ -55,7 +55,11 @@ function lookupWhois(domain, tlds) {
     return lookupTLD(0);
 }
 
-let initialMessageId = null;
+// Endpoint to receive updates from Telegram
+app.post(`/webhook/${token}`, (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200);
+});
 
 // Command to check domain with custom TLDs
 bot.onText(/\/check (.+)/, (msg, match) => {
@@ -78,7 +82,7 @@ bot.onText(/\/check (.+)/, (msg, match) => {
 
     bot.sendMessage(chatId, `Checking domain availability for "${domain}"`).then((sentMessage) => {
         // Save the message ID for deletion later
-        initialMessageId = sentMessage.message_id;
+        const initialMessageId = sentMessage.message_id;
 
         lookupWhois(domain, tlds)
             .then((results) => {
@@ -106,5 +110,8 @@ bot.onText(/\/check (.+)/, (msg, match) => {
             });
     });
 });
+
+// Set webhook
+bot.setWebHook(`${process.env.APP_URL}/webhook/${token}`);
 
 console.log('Bot is running...');

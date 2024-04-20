@@ -119,4 +119,3 @@ bot.onText(/\/check (.+)/, (msg, match) => {
 bot.setWebHook(`${app_url}/webhook/${token}`);
 
 console.log('Bot is running...');
-console.log('app url' app);

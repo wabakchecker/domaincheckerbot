@@ -15,6 +15,7 @@ app.listen(port, () => {
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const bot = new TelegramBot(token);
+const app_url = process.env.APP_URL;
 
 function lookupWhois(domain, tlds) {
     const results = [];
@@ -112,6 +113,7 @@ bot.onText(/\/check (.+)/, (msg, match) => {
 });
 
 // Set webhook
-bot.setWebHook(`${process.env.APP_URL}/webhook/${token}`);
+bot.setWebHook(`${app_url}/webhook/${token}`);
 
 console.log('Bot is running...');
+constole.log('updated');

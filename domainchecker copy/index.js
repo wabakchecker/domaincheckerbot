@@ -14,11 +14,10 @@ app.listen(port, () => {
 });
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token, { polling: false }); // Set polling to false
+
 const app_url = process.env.APP_URL;
 
-console.log('APP_URL:', app_url);
-console.log('TELEGRAM_BOT_TOKEN:', token);
 
 function lookupWhois(domain, tlds) {
     const results = [];
